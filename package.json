@@ -1,0 +1,254 @@
+// var PATH = "./"
+// var PROJECT_NAME = "tests-django"
+// var PATH_SRC = PATH + PROJECT_NAME + "/"
+// var PATH_DEST = PATH + "heroku-tests-django/"
+// var PATH_CONFIGS = PATH_SRC + 'builds/heroku-configs/'
+
+module.exports = function(grunt) {
+  // require('time-grunt')(grunt);
+  grunt.file.defaultEncoding = 'utf8';
+
+  // Project configuration.
+  grunt.initConfig({
+
+    pkg: grunt.file.readJSON('package.json'),
+    // Copy / Replace all folders / files
+    copy: {
+      src_backup: {
+        nonull: true,
+        files: [
+          {
+            expand: true,
+            src: [
+              '<%= srcPath %>**/*',
+              '<%= srcPath %>**/.*',
+               /****** Ignore Files ******/
+              // Builds
+              '!<%= srcPath %>builds/**',
+              '!<%= srcPath %>builds/**/.*',
+              /****************************/
+            ],
+             dest: '<%= srcBackup %>'
+           },
+        ],
+      },
+      heroku_backup: {
+        nonull: true,
+        files: [
+          {
+            expand: true,
+            src: [
+              '<%= herokuPath %>**/*',
+              '<%= herokuPath %>**/.*',
+            ],
+             dest: '<%= herokuBackup %>'
+           },
+        ],
+      },
+      main: {
+        nonull: true,
+        files: [
+          {
+            expand: true,
+            src: [
+              //Copy recursively Project Path
+              '<%= srcPath %>**/*', '<%= srcPath %>**/.*',
+
+              /****** Ignore Files ******/
+              // Builds
+              '!<%= srcPath %>builds/**', '!<%= srcPath %>builds/**/.*',
+              // Sources
+              '!<%= staticSrcPath %>src/**', '!<%= staticSrcPath %>src/**/.*',
+              // Tmp - Ps. Would deploy CSS and JS containing in root folder
+              '!<%= staticSrcPath %>css/*/**',
+              '!<%= staticSrcPath %>js/*/**',
+              /** Copy just .min in /lib **/
+              '!<%= staticSrcPath %>lib/**/*',
+              '<%= staticSrcPath %>lib/**/*.min.*',
+              '!<%= staticSrcPath %>lib/**/*.map',
+              /** End Copy just .min **/
+              /****************************/
+
+            ],
+             dest: '<%= herokuPath %>'
+           },
+           // Replace config files to way of Heroku
+          {src: ['<%= configsFile %>manage-heroku.py'], dest: '<%= herokuPath %>tests-django/manage.py'},
+          {src: ['<%= configsFile %>settings-heroku.py'], dest:'<%= herokuPath %>tests-django/project/settings.py'},
+          {src: ['<%= configsFile %>wsgi-heroku.py'], dest: '<%= herokuPath %>tests-django/project/wsgi.py'},
+        ],
+      },
+      modif_files: {
+        nonull: true,
+        options: { // Uncomment '/static/src' for heroku ignore this
+          process: function (content, srcpath) {
+            if (srcpath.indexOf(".gitignore") != -1) {
+              // Not ignores imgs
+              if (content.indexOf("static/img") != -1) {
+                content = content.replace(/static\/img.*/g,"# static/img/*");
+              }
+              // Not ignores libs
+              if (content.indexOf("static/lib") != -1) {
+                content = content.replace(/static\/lib.*/g,"# static/lib/*");
+              }
+              // Not ignores css.min
+              if (content.indexOf("static/css") != -1) {
+                content = content.replace(/static\/css.*/g,"# static/css/*");
+              }
+              // Not ignores js.min
+              if (content.indexOf("static/js") != -1) {
+                content = content.replace(/static\/js.*/g,"# static/js/*");
+              }
+              return content;
+            } else {
+              return content;
+            }
+          }
+        },
+        files: [
+          {
+            expand: true,
+            src: [
+              //Copy recursively Project Path
+              '<%= srcPath %>.gitignore',
+            ],
+             dest: '<%= herokuPath %>'
+           },
+        ],
+      },
+
+
+    },
+
+    // shell: {
+    //   removePyc: {
+    //     options: {
+    //         stdout: true
+    //     },
+    //     command: "cd <%= srcPath %> && find . -name '*.pyc' -delete;"
+    //   },
+
+    //   git_init: {
+    //     options: {
+    //         stdout: true
+    //     },
+    //     command: 'cd <%= srcPath %> && git init; cd -'
+    //   },
+    //   git_add: {
+    //     options: {
+    //         stdout: true
+    //     },
+    //     command: 'cd <%= srcPath %> && git add --all; cd -'
+    //   },
+    //   git_commit: {
+    //     options: {
+    //         stdout: true
+    //     },
+    //     command: 'cd <%= srcPath %>  && git commit -m "Auto Commit"; cd -'
+    //   },
+    //   git_remote_add: {
+    //     options: {
+    //         stdout: true
+    //     },
+    //     command: 'cd <%= srcPath %> && git remote add "<%= nameGit %>" <%= remoteGit %>; cd -'
+    //   },
+    //   git_push: {
+    //     options: {
+    //         stdout: true
+    //     },
+    //     command: 'cd <%= srcPath %>  && git push <%= nameGit %> master; cd -'
+    //   },
+
+    // },
+    bgShell: {
+      backup_directory: {
+        cmd: "cd <%= srcBackup %>/tests-django && python manage.py runserver 8052",
+        bg: true,
+      },
+      // runserver: {
+      //   cmd: "python manage.py runserver 8052",
+      //   bg: true,
+      // },
+      runserver: {
+        cmd: "cd <%= srcBackup %>/tests-django && python manage.py test",
+        bg: false,
+      },
+    },
+
+  });
+
+  // Load the plugins
+  grunt.loadNpmTasks('grunt-bg-shell');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-shell');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+
+  // Task(s).
+  //Constroi projeto pronto pra fazer Deploy no Heroku
+  grunt.registerTask('create','Cria projeto Heroku',  function(srcPath, herokuPath, srcBackup, herokuBackup) {
+    qtdArgs = arguments.length;
+
+    if (qtdArgs < 4) {
+      grunt.log.error(this.name + '-> args insufficient = ' + qtdArgs);
+      return
+    }
+    srcPath = grunt.util.normalizelf(srcPath);
+    srcBackup = grunt.util.normalizelf(srcBackup);
+    herokuPath = grunt.util.normalizelf(herokuPath);
+    herokuBackup = grunt.util.normalizelf(herokuBackup);
+    // Paths
+    grunt.config.set('srcPath', srcPath);
+    grunt.config.set('herokuPath', herokuPath);
+    // Libs e files
+    grunt.config.set('staticSrcPath', srcPath + 'static/');
+    grunt.config.set('configsFile', srcPath + 'builds/heroku-configs/');
+    // Backups Paths
+    isoDateTime = grunt.template.date('isoDateTime');
+
+    grunt.config.set('srcBackup', srcBackup + isoDateTime);
+    grunt.config.set('herokuBackup', herokuBackup + isoDateTime);
+
+    grunt.log.writeln(srcPath);
+    grunt.log.writeln(herokuPath);
+    grunt.log.writeln(srcBackup);
+    grunt.log.writeln(herokuBackup);
+
+
+    grunt.task.run(['copy_all']);
+  });
+
+  grunt.registerTask('copy_all','Copy All', function() {
+    grunt.task.run('copy');
+    grunt.task.run('bgShell');
+  });
+
+  // grunt.registerTask('rm-pyc', 'Remove arquivos .pyc', ['shell:removePyc']);
+
+
+  grunt.registerTask('push', 'Realiza Deploy no Heroku', function(gitPath, nameGit, remoteGit, remoteGitPart) {
+    gitPath = grunt.util.normalizelf(gitPath);
+    qtdArgs = arguments.length;
+
+    if (qtdArgs !== 3 && qtdArgs !== 4) {
+      grunt.log.error(this.name + ", args insufficient");
+      return
+    }
+    // Ajusts colon in text: "https://github" e "git@heroku.com:tests"...
+    if (qtdArgs === 4) {
+      remoteGit += ':' + remoteGitPart;
+    }
+
+    grunt.config.set('srcPath', gitPath);
+    grunt.config.set('nameGit', nameGit);
+    grunt.config.set('remoteGit', remoteGit);
+
+    grunt.log.writeln('- Path: ' + gitPath);
+    grunt.log.writeln('- Name: '+ nameGit);
+    grunt.log.writeln('- Remote: '+ remoteGit);
+
+    grunt.task.run(['shell:git_init', 'shell:git_add', 'shell:git_commit', 'shell:git_remote_add', 'shell:git_push']);
+  });
+
+
+
+};

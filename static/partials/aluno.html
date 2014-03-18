@@ -1,0 +1,25 @@
+<h1>Cadastro</h1>
+<br>
+<form role="form" ng-app="alunoControllers">
+  <div class="form-group">
+    <label for="inputNome">Nome</label>
+    <input type="text" ng-model='aluno.nome' class="form-control" id="inputNome" placeholder="Digite seu nome">
+  </div>
+  <div class="form-group">
+    <label for="inputIdade">Idade</label>
+    <input type="text" ng-model='aluno.idade' class="form-control" id="inputIdade" placeholder="Digite sua idade">
+  </div>
+  <div class="form-group">
+    <label for="inputFile">Escolha uma foto</label>
+    <input type="file" id="inputFile">
+    <p class="help-block">Tamanho deve ser no máximo 720x480.</p>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox"> Mantenha-me informado.
+    </label>
+  </div>
+  <button type="submit" class="btn btn-primary" ng-click="criar()">Enviar</button>
+</form>
+<br>
+<p>aluno: [[ aluno.nome ]]

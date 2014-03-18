@@ -1,0 +1,78 @@
+
+<style>
+.thumbnail {
+    position:relative;
+    overflow:hidden;
+}
+
+.caption {
+    position:absolute;
+    top:-100%;
+    right:0;
+    background:rgba(66, 139, 202, 0.75);
+    width:100%;
+    height:100%;
+    padding:2%;
+    text-align:center;
+    color:#fff !important;
+    z-index:2;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+.thumbnail:hover .caption {
+    top:0%;
+}
+</style>
+
+    <div class="row">
+        <div class="col-xs-6 col-sm-4 col-md-3">
+            <div class="thumbnail">
+                <div class="caption">
+                    <h4>Aulas de AngularJS</h4>
+                    <p>use MVC no lado cliente</p>
+                    <p><a href="" class="label label-danger">Detalhes</a>
+                    <a href="" class="label label-default">Adicione</a></p>
+                </div>
+                <img src="/static/img/img1.jpg" alt="...">
+            </div>
+        </div>
+
+        <div class="col-xs-6 col-sm-4 col-md-3">
+            <div class="thumbnail">
+                <div class="caption">
+                    <h4>Aulas de Python</h4>
+                    <p>aprenda a programar usando Pyhton</p>
+                    <p><a href="" class="label label-danger">Detalhes</a>
+                    <a href="" class="label label-default">Adicione</a></p>
+                </div>
+                <img src="/static/img/img2.jpg" alt="...">
+            </div>
+        </div>
+
+        <div class="col-xs-6 col-sm-4 col-md-3">
+            <div class="thumbnail">
+                <div class="caption">
+                    <h4>Aulas Django</h4>
+                    <p>use o framework web para python mais conhecido</p>
+                    <p><a href="" class="label label-danger">Detalhes</a>
+                    <a href="" class="label label-default">Adicione</a></p>
+                </div>
+                <img src="/static/img/img3.jpg" alt="...">
+            </div>
+        </div>
+
+        <div class="col-xs-6 col-sm-4 col-md-3">
+            <div class="thumbnail">
+                <div class="caption">
+                    <h4>Aulas Python REST</h4>
+                    <p>faça crud com estilo</p>
+                    <p><a href="" class="label label-danger">Detalhes</a>
+                    <a href="" class="label label-default">Adicione</a></p>
+                </div>
+                <img src="/static/img/img4.jpg" alt="...">
+            </div>
+        </div>
+    </div>

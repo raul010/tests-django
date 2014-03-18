@@ -1,0 +1,74 @@
+<!-- Static navbar -->
+<div class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/index">Web-aulas</a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a class='link-um' href="#/">Inicio</a></li>
+        <li><a class='link-dois' href="#/users">Users</a></li>
+        <li><a class='link-tres' href="#/aluno">Criar</a></li>
+        <li><a class='link-quatro' href="#/aulas">Aulas</a></li>
+        <li class="dropdown">
+          <a href="" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+        <li><a href="#/">Inicio</a></li>
+        <li><a href="#/users">Users</a></li>
+        <li><a href="#/aluno">Criar</a></li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Outros Links</li>
+            <li><a href="#">Link separado um</a></li>
+            <li><a href="#">Link separado dois</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="active"><a href="#/sobre">Sobre Raul</a></li>
+        <li><a href="">Sobre Web-aulas</a></li>
+        <li><a href="" data-toggle="modal" data-target="#myModal">Login</a></li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container-fluid -->
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Faça seu Login</h4>
+      </div>
+      <div class="modal-body">
+
+        <form role="form" ng-app="alunoControllers">
+          <div class="form-group">
+            <label for="inputNome">Username / Email</label>
+            <input type="text" ng-model='aluno.nome' class="form-control" id="inputNome" placeholder="Digite seu Username ou Email">
+          </div>
+          <div class="form-group">
+            <label for="inputSenha">Senha</label>
+            <input type="password" ng-model='aluno.senha' class="form-control" id="inputSenha" placeholder="Digite sua senha">
+          </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox"> Manter-me logado.
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary" ng-click="criar()">Enviar</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="link" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
