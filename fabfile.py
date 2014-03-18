@@ -34,13 +34,14 @@ def setup(env, origin, remote):
         comment = raw_input()
         if not comment:
             comment = 'Auto Commit'
-            local('git commit -m "%s"' % comment)
+            
+        local('git commit -m "%s"' % comment)
 
-        # with settings(warn_only=True):
-        # error = 128;
-        result = local('git remote add %s %s' %(origin, remote))
-        # if result.return_code == error:
-            # print("*** Remote already exists. Command ignored. ")
+        with settings(warn_only=True):
+            error = 128;
+            result = local('git remote add %s %s' %(origin, remote))
+            if result.return_code == error:
+                print("*** Remote already exists. Command ignored. ")
 
 def remove_pyc_files():
     local('find . -name "*.pyc" -delete')
