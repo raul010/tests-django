@@ -2,17 +2,31 @@ angular.module 'appServices', ['ngResource']
 
 .factory 'User', [ '$http', '$q', ($http, $q) ->
     return {
-        list : () ->
+        list: () ->
             defer = $q.defer()
             $http
                 method: 'GET'
-                url: '/users/'
+                url: '/user/'
             .success (data, status, headers, config) ->
                 defer.resolve(data)
                 return
             .error (data, status, headers, config) ->
                 defer.reject(status)
                 return
-            return defer.promise;
+            return defer.promise
+
+        save: (post) ->
+            defer = $q.defer()
+            $http
+                method: 'POST'
+                url: '/user/'
+                data: post
+            .success (data, status, headers, config) ->
+                defer.resolve(data)
+                return
+            .error (data, status, headers, config) ->
+                defer.reject(status)
+                return
+            return defer.promise
     }
 ]

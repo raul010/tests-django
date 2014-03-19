@@ -8,12 +8,15 @@ import os
 def main():
     parser = argparse.ArgumentParser(description='Scripts of Backup', prog='backup')
 
-    parser.add_argument('-b', '--build', help='Make a backup of builds file', action='store_true', required=False)
+    parser.add_argument('-b', '--build', help='Make a backup of BUILDS file', action='store_true', required=False)
+    parser.add_argument('-s', '--sites', help='Make a backup of SITES-AVAILABLE file', action='store_true', required=False)
+
 
     parser.add_argument('--version', action='version', version='%(prog)s 1.0')
 
     args = parser.parse_args()
     build = args.build
+    sites = args.sites
 
     time_stamp = datetime.datetime.utcnow().isoformat()
     time_stamp = time_stamp.replace(':', '-')
@@ -61,13 +64,31 @@ def main():
             subprocess.call(['cp', '-r', '/home/raul/dev/works-py2/%s' %(file_names[i]), dest_path])
             subprocess.call(['mv', dest_path + file_names[i], dest_files_root[i]])
 
-            #
-            # subprocess.call(['cp', '-r', '/home/raul/dev/works-py2/package.js', dest_path])
-            # subprocess.call(['mv', dest_path + src_package_name, dest_package_root])
+    if sites:
+         ### Folder sites-available ###
+        src_sites_name = 'sites-available'
 
-        os.chdir('/home/raul/dev/gdrive/')
-        subprocess.call(['grive'])
-        subprocess.call(shlex.split('google-chrome https://drive.google.com/?tab=yo&authuser=0#folders/0B7xj8KJbuS8vNnZadWhhT0I3bnc'))
+        # /etc/nginx/sites-available/
+        src_sites_path = '/etc/nginx/'
+
+        # /etc/nginx/sites-available/sites-available
+        src_sites_root = src_sites_path + src_sites_name
+
+         # sites-available-2014-03-18T11-52-53.546496
+        dest_sites_name = src_sites_name + time_stamp
+
+        # /home/raul/dev/gdrive/Projects/sites-available2014-03-18T11-52-53.546496
+        dest_sites_root = dest_path + dest_sites_name
+
+        print('==> sudo cp -r %s %s' %(src_sites_root, dest_path))
+        subprocess.call(['sudo', 'cp', '-r', src_sites_root, dest_path])
+        print('==> mv %s%s %s' %(dest_path, src_sites_name, dest_sites_root))
+        subprocess.call(['mv', dest_path + src_sites_name, dest_sites_root])
+
+
+    os.chdir('/home/raul/dev/gdrive/')
+    subprocess.call(['grive'])
+    subprocess.call(shlex.split('google-chrome https://drive.google.com/?tab=yo&authuser=0#folders/0B7xj8KJbuS8vNnZadWhhT0I3bnc'))
 
     # if deploy or create_deploy or create_deploy_git:
     #     call_process('sh-deploy-heroku')

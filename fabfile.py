@@ -34,7 +34,7 @@ def setup(env, origin, remote):
         comment = raw_input()
         if not comment:
             comment = 'Auto Commit'
-            
+
         local('git commit -m "%s"' % comment)
 
         with settings(warn_only=True):

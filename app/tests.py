@@ -10,7 +10,9 @@ class WhateverTest(TestCase):
         self.url = 'http://localhost:8052/index/'
 
 
-    def test_whatever_creation(self):
+    def test_view(self):
+
+
         request = urllib2.urlopen(self.url)
 
         self.assertEqual(request.code, 200)
@@ -24,6 +26,7 @@ class WhateverTest(TestCase):
     def elements_navigation(self, links, xpath, info):
         tag_name = links[0].tag
 
+        # If css test it. If link then accesses on, and test css and access others links.
         for i in links:
             link = i.xpath(xpath)[0]
             if 'a' == tag_name:

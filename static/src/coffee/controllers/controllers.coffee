@@ -1,10 +1,19 @@
 angular.module 'appControllers', []
 
-.controller 'UserCtrl', ['$scope', '$http', 'users',
+.controller 'UserListCtrl', ['$scope', '$http', 'users',
     ($scope, $http, users) ->
         $scope.users = users
         return
 ]
+
+
+.controller 'UserFormCtrl', ['$scope', 'User', ($scope, User) ->
+    $scope.criate = () ->
+        User.save($scope.user)
+        return
+    return
+]
+
 .controller 'SobreCtrl', ['$scope', '$http',
     ($scope, $http) ->
         $scope.hideSobre = false;
