@@ -1,12 +1,12 @@
 angular.module 'appServices', ['ngResource']
 
-.factory 'User', [ '$http', '$q', ($http, $q) ->
+.factory 'User', [ '$http', '$q', userFactory = ($http, $q) ->
     return {
         list: () ->
             defer = $q.defer()
             $http
                 method: 'GET'
-                url: '/user/'
+                url: '/rest/user/'
             .success (data, status, headers, config) ->
                 defer.resolve(data)
                 return
@@ -19,7 +19,7 @@ angular.module 'appServices', ['ngResource']
             defer = $q.defer()
             $http
                 method: 'POST'
-                url: '/user/'
+                url: '/rest/user/'
                 data: post
             .success (data, status, headers, config) ->
                 defer.resolve(data)

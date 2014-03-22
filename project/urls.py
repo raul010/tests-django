@@ -12,8 +12,8 @@ router.register(r'aluno', views.ClienteViewSet)
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^index/', 'app.views.index'),
-    url(r'^', include(router.urls)),
+    url(r'^rest/', include(router.urls)),
+    url(r'^', 'app.views.index'),
 )
 
 
