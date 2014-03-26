@@ -8,13 +8,22 @@ angular.module 'baseApp', [
     'alunoControllers',
     'alunoServices',
 ]
-
-.config ['$interpolateProvider', ($interpolateProvider) ->
-    $interpolateProvider.startSymbol('[[');
-    $interpolateProvider.endSymbol(']]');
+.config ['$httpProvider', ($httpProvider) ->
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken'
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken'
     return
 ]
 
+.config ['$interpolateProvider', ($interpolateProvider) ->
+    $interpolateProvider.startSymbol('[[')
+    $interpolateProvider.endSymbol(']]')
+    return
+]
+# .config ['$httpProvider', ($httpProvider) ->
+#     $httpProvider.defaults.useXDomain = true
+#     delete $httpProvider.defaults.headers.common['X-Requested-With']
+#     return
+# ]
 # .get '/proxy-form', (req, res) ->
 #     if process.env.NODE_ENV == 'production' && req.headers['x-forwarded-proto'] != 'https'
 #         return res.redirect 'https://' + req.get('Host') + req.url
@@ -24,34 +33,38 @@ angular.module 'baseApp', [
 
 .config ['$routeProvider', '$locationProvider',
     ($routeProvider, $locationProvider) ->
-        verifyHttps = (HttpUrl) -> return HttpUrl
+        httpForceService = (httpForce) -> return httpForce
+        httpsForceService = (httpsForce) -> return httpsForce
+
 
         $routeProvider
             .when '/',
                 templateUrl: static_file + 'partials/inicio.html'
                 resolve:
-                    noHttps: verifyHttps
+                    httpForce: httpForceService
             .when '/sobre',
                 # appControllers
                 templateUrl: static_file + 'partials/sobre.html'
                 controller: 'SobreCtrl'
                 resolve:
-                    noHttps: verifyHttps
+                    httpForce: httpForceService
             .when '/aulas',
                 templateUrl: static_file + 'partials/aulas.html'
                 resolve:
-                    noHttps: verifyHttps
+                    httpForce: httpForceService
             .when '/user-list',
                 # appControllers
                 templateUrl: static_file + 'partials/users/user-list.html'
                 controller: 'UserListCtrl'
                 resolve:
                     users: (User) -> return User.list()
-                    noHttps: verifyHttps
+                    httpForce: httpForceService
             .when '/user-form',
                 # alunoControllers
                 templateUrl: static_file + 'partials/users/user-form.html'
                 controller: 'UserFormCtrl'
+                resolve:
+                    httpsForce: httpsForceService
 
 
         # use the HTML5 History API
@@ -60,25 +73,18 @@ angular.module 'baseApp', [
 ]
 
 
-.run ['$http','$cookies', ($http, $cookies) ->
-    $http.defaults.headers.common['X-CSRFToken'] = $cookies['csrftoken']
-    return
-]
+# .run ['$http','$cookies', ($http, $cookies) ->
+#     $http.defaults.headers.common['X-CSRFToken'] = $cookies['csrftoken']
+#     $http.defaults.headers.post['X-CSRFToken'] = $cookies['csrftoken']
+#     $http.defaults.headers.put['X-CSRFToken'] = $cookies['csrftoken']
+#     return
+# ]
 
 .run ['$templateCache', '$http', '$location', ($templateCache, $http, $location) ->
     # $http.get('partials/inicio.html', {cache:$templateCache});
     # $http.get('partials/aulas.html', {cache:$templateCache});
     # $http.get('partials/users/user-list.html', {cache:$templateCache});
     # $http.get('js/all-controllers.min.js', {cache:$templateCache});
-    return
-]
-
-# changes all absUrl when it comes from https, however itself not needs to be https
-.factory 'HttpUrl', ['$rootScope', '$location', '$window', ($rootScope, $location, $window) ->
-    if $location.protocol() == 'https'
-        url = 'http://' + $location.host() + ':8000' + $location.path()
-        $window.location.href = url
-        $rootScope.$apply()
     return
 ]
 

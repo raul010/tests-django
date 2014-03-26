@@ -13,8 +13,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.dirname(__file__)
 
-# To avoid the message: app.user: app.user: Accessor for m2m field 'groups' clashes with related m2m field
-# 'Group.user_set'. Add a related_name argument to the definition for 'groups'.
 AUTH_USER_MODEL = 'app.User'
 
 # REST_FRAMEWORK = {
@@ -28,8 +26,8 @@ AUTH_USER_MODEL = 'app.User'
 # Additional locations of static files
 STATICFILES_DIRS = (
 
-    # os.path.normpath(os.path.join(BASE_DIR, 'django')),
-    # os.path.normpath(os.path.join(BASE_DIR, 'static/')),
+    os.path.normpath(os.path.join(BASE_DIR, 'project/static')),
+    os.path.normpath(os.path.join(BASE_DIR, 'static')),
 
 
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -47,6 +45,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'django_jenkins',
+    # 'corsheaders',
+
     'rest_framework',
     'app',
 )
@@ -58,6 +58,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
+
 )
 
 JENKINS_TASKS = (
@@ -71,9 +73,6 @@ JENKINS_TASKS = (
     # 'django_jenkins.tasks.run_sloccount',
 )
 
-
-
-
 PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
@@ -83,10 +82,6 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
     'django.contrib.auth.hashers.CryptPasswordHasher',
 )
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-
-
 
 ROOT_URLCONF = 'project.urls'
 
@@ -131,3 +126,49 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = '/project/static/'
+
+# SESSION_COOKIE_SECURE = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# CORS_ORIGIN_WHITELIST = (
+#     'google.com',
+#     'localhost',
+#     'localhost:80',
+#     'localhost:8000',
+#     'localhost:5000',
+# )
+# CORS_ALLOW_HEADERS = (
+#     'x-requested-with',
+#     'content-type',
+#     'accept',
+#     'origin',
+#     'authorization',
+#     'X-CSRFToken',
+# )
+# CORS_ALLOW_CREDENTIALS = True
+
+# CSRF_COOKIE_DOMAIN = "localhost"
+
+import logging
+logger = logging.getLogger("mylog")
+logging.basicConfig(format='%(name)s:%(levelname)s:%(message)s',level=logging.INFO,datefmt='%d/%m/%y %I:%M:%S')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+        }
+
+    },
+    'loggers': {
+        'django': {
+            'handlers':['console'],
+            'propagate': True,
+            'level':'INFO',
+        },
+
+    }
+}

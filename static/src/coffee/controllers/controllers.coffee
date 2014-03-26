@@ -10,29 +10,16 @@ angular.module 'appControllers', []
 ]
 
 
-.controller 'UserFormCtrl', ['$scope', 'User', ($scope, User) ->
-    # setTimeout () ->
-    #     console.log 'automatically update view?'
-    #     $scope.$apply()
-    #     response.setIntHeader("Refresh", 1)
-    #     return
-    # , 1000
+.controller 'UserFormCtrl', ['$scope','$window', '$location', 'User', '$http'
+     ($scope, $window, $location, User, $http) ->
+        $http.defaults.useXDomain = true
+        delete $http.defaults.headers.common['X-Requested-With']
 
-    #alert "oi"
-    # $window.alert "oi"
-    # $window.location.reload()
-    $scope.criate = () ->
-        User.save($scope.user)
+        $scope.criate = () ->
+            User.save($scope.user)
+            return
         return
-    return
 ]
-
-# .controller 'UserProxyFormCtrl', ['$window', '$scope', ($window, $scope) ->
-#     # alert 'ola'
-#     # $window.location.href = 'https://localhost/user-form'
-#     # $window.location.reload();
-#     return
-# ]
 
 .controller 'SobreCtrl', ['$scope', '$http',
     ($scope, $http) ->

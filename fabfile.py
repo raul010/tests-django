@@ -13,10 +13,6 @@ def deploy(remote, origin='heroku'):
     local('pip freeze > requirements.txt')
     setup(deploy_env, origin, remote)
 
-    local('heroku maintenance:on')
-    local('git push -f heroku master')
-    local('heroku maintenance:off')
-
 def git(remote, origin='origin'):
     setup(git_env, origin, remote)
     local('git push -u origin master')
@@ -30,18 +26,22 @@ def setup(env, origin, remote):
         local('git init')
         local('git add .')
 
-        print("*** Enter your Commit Comment: ")
-        comment = raw_input()
-        if not comment:
-            comment = 'Auto Commit'
-
-        local('git commit -m "%s"' % comment)
-
         with settings(warn_only=True):
+            print("*** Enter your Commit Comment: ")
+            comment = raw_input()
+            if not comment:
+                comment = 'Auto Commit'
+
+                local('git commit -m "%s"' % comment)
+
             error = 128;
             result = local('git remote add %s %s' %(origin, remote))
             if result.return_code == error:
                 print("*** Remote already exists. Command ignored. ")
+
+            # local('heroku maintenance:on')
+            local('git push -f heroku master')
+            # local('heroku maintenance:off')
 
 def remove_pyc_files():
     local('find . -name "*.pyc" -delete')
